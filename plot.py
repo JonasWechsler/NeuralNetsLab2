@@ -2,7 +2,10 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from mpl_toolkits.mplot3d import Axes3D
 
-def plot(x_values, y_values):
+def plot(x_values, y_values, y_limits = None):
+    if y_limits != None:
+        axes = plt.gca()
+        axes.set_ylim(y_limits)
     plt.plot(x_values, y_values)
     plt.show()
 

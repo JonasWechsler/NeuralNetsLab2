@@ -12,7 +12,7 @@ class RBF:
 def run(weights, rbfs, x):
     return sum(w*rbf.phi(x) for w,rbf in zip(weights, rbfs))
 
-def train(data, values, N = None):
+def least_squares(data, values, N = None):
     if N == None:
         N = len(data)
     mu = np.random.choice(data, N)
@@ -23,9 +23,10 @@ def train(data, values, N = None):
     return w, rbfs
 
 if __name__ == "__main__":
-    data = list(np.arange(0, 6, .1))
-    values = [np.sin(x) for x in data]
-    w, rbfs = train(data, values, 10)
-    result = [run(w, rbfs, x) for x in data]
-    plot.plot(data, values)
-    plot.plot(data, result)
+    train_data = list(np.arange(0, 2*np.pi, .5))
+    test_data = list(np.arange(0, 2*np.pi, .1))
+    values = np.array([np.sin(x) for x in train_data])
+    w, rbfs = least_squares(train_data, values)
+    result = [run(w, rbfs, x) for x in test_data]
+    plot.plot(train_data, values, [-1, 1])
+    plot.plot(test_data, result, [-1, 1])
