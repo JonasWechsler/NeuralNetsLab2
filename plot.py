@@ -13,3 +13,8 @@ def plot_points(y_values):
     x_values = list(range(len(y_values)))
     plt.plot(x_values, y_values)
     plt.show()
+
+def plot_lattice(lattice):
+    for a, b in lattice:
+        plt.plot([a[0], b[0]], [a[1], b[1]], 'bo-')
+    plt.show()
