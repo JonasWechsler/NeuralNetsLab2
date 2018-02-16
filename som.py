@@ -56,7 +56,17 @@ if __name__ == "__main__":
         data += [np.array([np.cos(i)*5, np.sin(i)*5])]
         data += [np.array([np.cos(i)*6, np.sin(i)*6])]
         data += [np.array([np.cos(i)*7, np.sin(i)*7])]
-    for _ in range(100):
+    data = np.array(data)
+    plot.plot_lattice(som.get_connections(), False)
+    plot.plot(data.T[0], data.T[1])
+    for _ in range(5):
         for d in data:
-            train(d, som, 3)
-    plot.plot_lattice(som.get_connections())
+            train(d, som, 2, 0.02)
+    for _ in range(10):
+        for d in data:
+            train(d, som, 1, 0.02)
+    for _ in range(60):
+        for d in data:
+            train(d, som, 0, 0.02)
+    plot.plot_lattice(som.get_connections(), False)
+    plot.plot(data.T[0], data.T[1])
