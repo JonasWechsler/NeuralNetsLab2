@@ -6,18 +6,28 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 class SOM:
-    def __init__(self, width, height, default=np.array([0,0])):
+    def __init__(self, width, height, default=np.array([0,0]), loop=False):
         self.width = width
         self.height = height
         self._lattice = [default]*width*height
+        self._loop = loop
     def set(self, x, y, vector):
         self._lattice[y*self.width+x] = vector
     def get(self, x, y):
         return self._lattice[y*self.width+x]
     def _in_bounds(self, x, y):
         return x >= 0 and y >= 0 and x < self.width and y < self.height
+    def _mod(self, x, y):
+        return (x + self.width)%self.width, (y + self.height)%self.height
     def _adjacent(self, x, y, radius):
-        return [(i, j) for i in range(x-radius, x+radius+1) for j in range(y-radius, y+radius+1) if self._in_bounds(i, j)]
+        if self._loop:
+            if self.width == 1:
+                return [self._mod(0, j) for j in range(y-radius, y+radius+1)]
+            if self.height == 1:
+                return [self._mod(i, 0) for i in range(x-radius, x+radius+1)]
+            return [self._mod(i, j) for i in range(x-radius, x+radius+1) for j in range(y-radius, y+radius+1)]
+        else:
+            return [(i, j) for i in range(x-radius, x+radius+1) for j in range(y-radius, y+radius+1) if self._in_bounds(i, j)]
     def get_adjacent(self, x, y, radius):
         return [self.get(i, j) for i, j in self._adjacent(x, y, radius)]
     def get_all(self, with_position = False):

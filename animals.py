@@ -20,13 +20,14 @@ if __name__ == "__main__":
         for j in range(som.height):
             som.set(i, j, np.array([np.random.uniform() for _ in range(84)]))
 
-    for radius in [3,2,1,0]:
-        for epoch in range(5):
+    for radius in [40, 30, 20, 10, 0]:
+        for epoch in range(4):
             for animal in data_array:
                 train(animal, som, radius)
     for idx, animal in enumerate(data_array):
         print(idx, data_labels[idx], index(animal, som))
     result = sorted([(index(animal, som), data_labels[idx]) for idx, animal in enumerate(data_array)])
+    print(result)
     with open("out/animals.out", "w") as outf:
         for r in result:
             outf.write(r[1])
