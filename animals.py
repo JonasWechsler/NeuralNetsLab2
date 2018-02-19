@@ -24,13 +24,13 @@ if __name__ == "__main__":
         for epoch in range(4):
             for animal in data_array:
                 train(animal, som, radius)
-    for idx, animal in enumerate(data_array):
-        print(idx, data_labels[idx], index(animal, som))
+    #for idx, animal in enumerate(data_array):
+    #    print(idx, data_labels[idx], index(animal, som))
     result = sorted([(index(animal, som), data_labels[idx]) for idx, animal in enumerate(data_array)])
-    print(result)
     with open("out/animals.out", "w") as outf:
         for r in result:
             outf.write(r[1])
+            print(r[1])
             outf.write("\n")
     
     
