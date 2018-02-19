@@ -6,7 +6,7 @@ def plot(x_values, y_values, y_limits = None):
     if y_limits != None:
         axes = plt.gca()
         axes.set_ylim(y_limits)
-    plt.plot(x_values, y_values)
+    plt.plot(x_values, y_values, 'ro')
     plt.show()
 
 def plot_points(y_values):
@@ -14,7 +14,8 @@ def plot_points(y_values):
     plt.plot(x_values, y_values)
     plt.show()
 
-def plot_lattice(lattice):
+def plot_lattice(lattice, show=True):
     for a, b in lattice:
         plt.plot([a[0], b[0]], [a[1], b[1]], 'bo-')
-    plt.show()
+    if show:
+        plt.show()

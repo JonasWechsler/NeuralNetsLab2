@@ -24,7 +24,7 @@ def least_squares(data, values, N = None):
 
 if __name__ == "__main__":
     train_data = list(np.arange(0, 2*np.pi, .5))
-    test_data = list(np.arange(0, 2*np.pi, .1))
+    test_data = list(np.arange(-1, 3*np.pi, .1))
     values = np.array([np.sin(x) for x in train_data])
     w, rbfs = least_squares(train_data, values)
     result = [run(w, rbfs, x) for x in test_data]

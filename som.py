@@ -17,7 +17,7 @@ class SOM:
     def _in_bounds(self, x, y):
         return x >= 0 and y >= 0 and x < self.width and y < self.height
     def _adjacent(self, x, y, radius):
-        return [(i, j) for i in range(x-radius, x+radius) for j in range(y-radius, y+radius) if self._in_bounds(i, j)]
+        return [(i, j) for i in range(x-radius, x+radius+1) for j in range(y-radius, y+radius+1) if self._in_bounds(i, j)]
     def get_adjacent(self, x, y, radius):
         return [self.get(i, j) for i, j in self._adjacent(x, y, radius)]
     def get_all(self, with_position = False):
@@ -38,6 +38,9 @@ class SOM:
                     result += [(self.get(x, y), self.get(x, y+1))]
         return result
 
+def index(data, som):
+    _, x, y, winner = min((np.linalg.norm(data-node), x, y, node) for node, x, y in som.get_all(True))
+    return x, y
 
 def train(data, som, neighborhood_radius=1, nu=0.2):
     _, x, y, winner = min((np.linalg.norm(data-node), x, y, node) for node, x, y in som.get_all(True))
@@ -59,13 +62,16 @@ if __name__ == "__main__":
     data = np.array(data)
     plot.plot_lattice(som.get_connections(), False)
     plot.plot(data.T[0], data.T[1])
-    for _ in range(5):
+    for _ in range(10):
+        for d in data:
+            train(d, som, 3, 0.02)
+    for _ in range(10):
         for d in data:
             train(d, som, 2, 0.02)
     for _ in range(10):
         for d in data:
             train(d, som, 1, 0.02)
-    for _ in range(60):
+    for _ in range(10):
         for d in data:
             train(d, som, 0, 0.02)
     plot.plot_lattice(som.get_connections(), False)
