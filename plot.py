@@ -19,3 +19,7 @@ def plot_lattice(lattice, show=True):
         plt.plot([a[0], b[0]], [a[1], b[1]], 'bo-')
     if show:
         plt.show()
+
+def plot_heatmap(data):
+    plt.imshow(data, cmap='hot', interpolation='nearest')
+    plt.show()
