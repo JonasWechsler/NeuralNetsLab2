@@ -2,6 +2,8 @@ import plot
 import numpy as np
 from som import *
 from matplotlib.backends.backend_pdf import PdfPages
+import matplotlib.pyplot as plt
+
 
 def read_additional_file(inf_name, f=int):
     with open("data/{}".format(inf_name)) as inf:
@@ -22,8 +24,11 @@ if __name__ == "__main__":
         for epoch in range(4):
             for member in data_array:
                 train(member, som, radius)
-    for labels, name in [(party_list, "party"), (sex_list, "sex"), (district_list, "district")]:
+    pp = PdfPages("out/votes.pdf")
+    for labels, name, width in [(party_list, "party", 4), (sex_list, "sex", 4), (district_list, "district", 4)]:
         for label in set(labels):
+            plt.figure(figsize=(width, width))
+            plt.title("{}:{}".format(name, label))
             print(name, label)
             result = np.zeros((10, 10))
             for idx, member in enumerate(data_array):
@@ -31,4 +36,7 @@ if __name__ == "__main__":
                 #print(i, j, names_list[idx])
                 if labels[idx] == label:
                     result[i][j] += 1
-            plot.plot_heatmap(result)
+            plt.imshow(result, cmap='cool', interpolation='nearest')
+            pp.savefig()
+            plt.close()
+    pp.close()
