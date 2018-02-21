@@ -97,9 +97,9 @@ if __name__ == "__main__":
     test_nodes = [_ for _ in range(1, num)]
     result = []
     for n in test_nodes:
-        result.append(least_squares_sin(n, False))
+        #result.append(least_squares_sin(n, False))
         #result.append(least_squares_square(n, False))
-        #result.append(least_squares_sin_noise(n, False))
+        result.append(least_squares_sin_noise(n, False))
         #result.append(least_squares_square_modified(n, False))
 
     plot.plot(test_nodes, result, [0, 1])
