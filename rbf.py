@@ -22,7 +22,7 @@ def least_squares(data, values, N = None):
     w = np.linalg.solve(phi, values)
     return w, rbfs
 
-def iterative_batch(train_data, test_data, values, error=0.1, N = None):
+def iterative_batch(train_data, test_data, train_values, test_values, error=0.1, N = None):
     if N == None:
         N = len(train_data)
     w = np.random.normal(-1, 1, N)
@@ -31,11 +31,11 @@ def iterative_batch(train_data, test_data, values, error=0.1, N = None):
     rbfs = [RBF(m, s) for m, s in zip(mu, sig)]
     big_phi = np.array([[rbf.phi(x) for rbf in rbfs] for x in train_data])
 
-    w = np.linalg.lstsq(big_phi.T.dot(big_phi), big_phi.T.dot(values), rcond=-1)[0]
+    w = np.linalg.lstsq(big_phi.T.dot(big_phi), big_phi.T.dot(train_values), rcond=-1)[0]
 
     # Test data error
     big_phi = np.array([[rbf.phi(x) for rbf in rbfs] for x in test_data])
-    total_error =  sum((big_phi.dot(w) - values) ** 2)/len(test_data)
+    total_error =  sum((big_phi.dot(w) - test_values) ** 2)/len(test_data)
     return w, rbfs, total_error
 
 def least_squares_sin_noise(N=5, shouldPlot=True):
@@ -43,48 +43,52 @@ def least_squares_sin_noise(N=5, shouldPlot=True):
     test_data = list(np.arange(0.05, 2*np.pi, 0.1))
     train_noise = np.random.normal(0,0.1,len(train_data))
     test_noise = np.random.normal(0,0.1,len(test_data))
-    train_data += train_noise
-    test_data += test_noise
-    values = np.array([np.sin(2*x) for x in train_data])
-    w, rbfs, error = iterative_batch(train_data, test_data, values, N=N)
+    train_values = np.array([np.sin(2*x) for x in train_data])
+    test_values = np.array([np.sin(2*x) for x in test_data])
+    train_values += train_noise
+    test_values += test_noise
+    w, rbfs, error = iterative_batch(train_data, test_data, train_values, test_values, N=N)
     result = [run(w, rbfs, x) for x in test_data]
     if shouldPlot:
-        plot.plot(train_data, values, [-1, 1])
+        plot.plot(train_data, train_values, [-1, 1])
         plot.plot(test_data, result, [-1, 1])
     return error
 
 def least_squares_square(N=5, shouldPlot=True):
     train_data = list(np.arange(0, 2*np.pi, 0.1))
     test_data = list(np.arange(0.05, 2*np.pi, 0.1))
-    values = np.array([1 if x < np.pi/2 or (x>np.pi and x<3*np.pi/2) else -1 for x in train_data])
-    w, rbfs, error = iterative_batch(train_data, test_data, values, N=N)
+    train_values = np.array([1 if x < np.pi/2 or (x>np.pi and x<3*np.pi/2) else -1 for x in train_data])
+    test_values = np.array([1 if x < np.pi/2 or (x>np.pi and x<3*np.pi/2) else -1 for x in test_data])
+    w, rbfs, error = iterative_batch(train_data, test_data, train_values, test_values, N=N)
     result = [run(w, rbfs, x) for x in test_data]
     if shouldPlot:
-        plot.plot(train_data, values, [-1, 1])
+        plot.plot(train_data, train_values, [-1, 1])
         plot.plot(test_data, result, [-1, 1])
     return error
 
 def least_squares_square_modified(N=5, shouldPlot=True):
     train_data = list(np.arange(0, 2*np.pi, 0.1))
     test_data = list(np.arange(0.05, 2*np.pi, 0.1))
-    values = np.array([1 if x < np.pi/2 or (x>np.pi and x<3*np.pi/2) else -1 for x in train_data])
-    w, rbfs, error = iterative_batch(train_data, test_data, values, N=N)
+    train_values = np.array([1 if x < np.pi/2 or (x>np.pi and x<3*np.pi/2) else -1 for x in train_data])
+    test_values = np.array([1 if x < np.pi/2 or (x>np.pi and x<3*np.pi/2) else -1 for x in test_data])
+    w, rbfs, error = iterative_batch(train_data, test_data, train_values, test_values, N=N)
     result = [run(w, rbfs, x) for x in test_data]
     result = [1 if x>0 else -1 for x in result]
-    error =  sum((result - values) ** 2)/len(test_data)
+    error =  sum((result - test_values) ** 2)/len(test_data)
     if shouldPlot:
-        plot.plot(train_data, values, [-1, 1])
+        plot.plot(train_data, train_values, [-1, 1])
         plot.plot(test_data, result, [-1, 1])
     return error
 
 def least_squares_sin(N=5, shouldPlot=True):
     train_data = list(np.arange(0, 2*np.pi, 0.1))
     test_data = list(np.arange(0.05, 2*np.pi, 0.1))
-    values = np.array([np.sin(2*x) for x in train_data])
-    w, rbfs, error = iterative_batch(train_data, test_data, values, N=N)
+    train_values = np.array([np.sin(2*x) for x in train_data])
+    test_values = np.array([np.sin(2*x) for x in test_data])
+    w, rbfs, error = iterative_batch(train_data, test_data, train_values, test_values, N=N)
     result = [run(w, rbfs, x) for x in test_data]
     if shouldPlot:
-        plot.plot(train_data, values, [-1, 1])
+        plot.plot(train_data, train_values, [-1, 1])
         plot.plot(test_data, result, [-1, 1])
     return error
 
@@ -93,9 +97,9 @@ if __name__ == "__main__":
     test_nodes = [_ for _ in range(1, num)]
     result = []
     for n in test_nodes:
-        #result.append(least_squares_sin(n, False))
+        result.append(least_squares_sin(n, False))
         #result.append(least_squares_square(n, False))
         #result.append(least_squares_sin_noise(n, False))
-        result.append(least_squares_square_modified(n, False))
+        #result.append(least_squares_square_modified(n, False))
 
     plot.plot(test_nodes, result, [0, 1])
