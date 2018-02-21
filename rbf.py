@@ -96,6 +96,7 @@ def rbfs_init_rn(data,rng,N=None):
 
 if __name__ == "__main__":
     epoch=40
+    rbf_count=10
     error_array_acc=np.zeros(epoch)
     train_data = list(np.arange(0, 2*np.pi, .1))
     test_data = list(np.arange(0.05, 2*np.pi, .1))
@@ -104,7 +105,7 @@ if __name__ == "__main__":
         noise = np.random.normal(0,0.1,len(train_data))
         train_data+=noise
         mu = np.random.choice(train_data, len(train_data))
-        rbfs = rbfs_init(train_data,2*np.pi,5)
+        rbfs = rbfs_init(train_data,2*np.pi,rbf_count)
         rbfs =vanilla(rbfs,train_data,1000)
         for i in range(0,len(rbfs)):
             print("rbf  ", i," ",rbfs[i].position )
