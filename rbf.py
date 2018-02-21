@@ -6,8 +6,8 @@ class RBF:
         self.position = mu
         self.variance = sig_squared
     def phi(self, x):
-        relative_position = x - self.position
-        return np.exp(-relative_position*relative_position/(2*self.variance))
+        distance = np.absolute(x - self.position)**2
+        return np.exp(-distance/(2*self.variance))
 
 def run(weights, rbfs, x):
     return sum(w*rbf.phi(x) for w,rbf in zip(weights, rbfs))
